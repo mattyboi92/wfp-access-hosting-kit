@@ -1,0 +1,15 @@
+{
+  // One tenant site = one isolated user Worker (with static assets) uploaded
+  // into your Workers for Platforms dispatch namespace.
+  //
+  // Deploy with:  wrangler deploy --dispatch-namespace <your-namespace>
+  // The script "name" is the tenant slug; the router looks up DISPATCHER.get(slug),
+  // so this becomes reachable at <name>.<SITES_DOMAIN> and /<name>/.
+  "name": "tenant-example",
+  "main": "worker.js",
+  "compatibility_date": "2024-10-01",
+  "assets": {
+    "directory": "./public",
+    "binding": "ASSETS"
+  }
+}

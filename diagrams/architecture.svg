@@ -1,0 +1,152 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 900" font-family="'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif">
+  <defs>
+    <style>@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap');</style>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#F6821F"/>
+    </marker>
+    <marker id="arrowmuted" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#6B7280"/>
+    </marker>
+  </defs>
+
+  <rect width="1400" height="900" fill="#FFFFFF"/>
+
+  <!-- Title -->
+  <text x="60" y="56" font-size="29" font-weight="700" fill="#1A1A1A">Self-service site publishing — Cloudflare Access + Workers for Platforms</text>
+  <text x="60" y="84" font-size="15" fill="#6B7280">As-built POC. User authenticates to Cloudflare Access (Okta or One-Time PIN); one scoped API token lives server-side in the control-plane. User never touches the Cloudflare account.</text>
+
+  <!-- ============ ZONE 1: End user ============ -->
+  <rect x="50" y="150" width="300" height="560" rx="8" fill="none" stroke="#1A6FD4" stroke-width="1.5" stroke-dasharray="8 4"/>
+  <text x="200" y="178" font-size="16" font-weight="600" fill="#1A1A1A" text-anchor="middle">End user (non-engineer)</text>
+
+  <g transform="translate(160,205)">
+    <rect x="0" y="0" width="80" height="52" rx="5" fill="#F5F7FA" stroke="#1A6FD4" stroke-width="2"/>
+    <rect x="-10" y="52" width="100" height="8" rx="3" fill="#1A6FD4"/>
+  </g>
+  <text x="200" y="285" font-size="14" font-weight="600" fill="#1A1A1A" text-anchor="middle">CLI + AI agent</text>
+  <text x="200" y="304" font-size="12" fill="#6B7280" text-anchor="middle">(demo kit / Claude / opencode)</text>
+
+  <rect x="80" y="326" width="240" height="158" rx="6" fill="#F5F7FA" stroke="#D1D9E0"/>
+  <text x="100" y="352" font-size="13" font-weight="600" fill="#1A1A1A">Fresh CLI login</text>
+  <text x="100" y="375" font-size="11.5" fill="#6B7280">cloudflared access login</text>
+  <text x="100" y="394" font-size="11.5" fill="#6B7280">  https://deploy.example.com</text>
+  <text x="100" y="416" font-size="11.5" fill="#6B7280">→ browser SSO (Okta or OTP)</text>
+  <text x="100" y="438" font-size="11.5" fill="#6B7280">→ CLI caches Access token</text>
+  <text x="100" y="466" font-size="11.5" fill="#1A6FD4" font-weight="600">No Cloudflare credential on device</text>
+
+  <rect x="80" y="500" width="240" height="188" rx="6" fill="#F5F7FA" stroke="#D1D9E0"/>
+  <text x="100" y="526" font-size="13" font-weight="600" fill="#1A1A1A">Publish a site</text>
+  <text x="100" y="549" font-size="11.5" fill="#6B7280">"Build &amp; publish MWI Coffee"</text>
+  <text x="100" y="571" font-size="11.5" fill="#6B7280">1. Agent generates static site</text>
+  <text x="100" y="593" font-size="11.5" fill="#6B7280">2. POST /deploy</text>
+  <text x="100" y="615" font-size="11.5" fill="#6B7280">   header: cf-access-token</text>
+  <text x="100" y="637" font-size="11.5" fill="#6B7280">   body: { tenant, html }</text>
+  <text x="100" y="666" font-size="11.5" fill="#1A6FD4" font-weight="600">Only holds an Access token</text>
+
+  <!-- ============ Cloudflare Access (top center) ============ -->
+  <rect x="430" y="150" width="240" height="130" rx="8" fill="none" stroke="#F6821F" stroke-width="2"/>
+  <text x="550" y="176" font-size="15" font-weight="700" fill="#F6821F" text-anchor="middle">Cloudflare Access</text>
+  <g transform="translate(535,188)">
+    <path d="M15 0 L30 7 L30 20 C30 32 22 40 15 44 C8 40 0 32 0 20 L0 7 Z" fill="#F5F7FA" stroke="#F6821F" stroke-width="2"/>
+    <path d="M8 21 l5 5 l9 -11" fill="none" stroke="#F6821F" stroke-width="2.5" stroke-linecap="round"/>
+  </g>
+  <text x="550" y="252" font-size="12" fill="#6B7280" text-anchor="middle">IdPs: Okta + One-Time PIN</text>
+  <text x="550" y="270" font-size="12" fill="#6B7280" text-anchor="middle">your-team.cloudflareaccess.com</text>
+
+  <!-- ============ ZONE 2: Control-plane ============ -->
+  <rect x="430" y="310" width="240" height="400" rx="8" fill="none" stroke="#1A6FD4" stroke-width="1.5" stroke-dasharray="8 4"/>
+  <text x="550" y="336" font-size="15" font-weight="600" fill="#1A1A1A" text-anchor="middle">Control-plane (Worker)</text>
+  <text x="550" y="355" font-size="11.5" fill="#6B7280" text-anchor="middle">deploy.example.com · behind Access</text>
+
+  <rect x="455" y="372" width="190" height="96" rx="6" fill="#F5F7FA" stroke="#D1D9E0"/>
+  <text x="550" y="397" font-size="13" font-weight="600" fill="#1A1A1A" text-anchor="middle">Validate Access JWT</text>
+  <text x="550" y="418" font-size="11" fill="#6B7280" text-anchor="middle">Cf-Access-Jwt-Assertion</text>
+  <text x="550" y="436" font-size="11" fill="#6B7280" text-anchor="middle">aud · iss · exp · RS256 sig</text>
+  <text x="550" y="456" font-size="11" fill="#6B7280" text-anchor="middle">→ identity: email / groups</text>
+
+  <rect x="455" y="480" width="190" height="82" rx="6" fill="#F5F7FA" stroke="#D1D9E0"/>
+  <text x="550" y="505" font-size="13" font-weight="600" fill="#1A1A1A" text-anchor="middle">Deploy user Worker</text>
+  <text x="550" y="526" font-size="11" fill="#6B7280" text-anchor="middle">WFP API · tag owner-&lt;email&gt;</text>
+  <text x="550" y="544" font-size="11" fill="#6B7280" text-anchor="middle">custom limits (per plan)</text>
+
+  <rect x="455" y="574" width="190" height="112" rx="6" fill="#F5F7FA" stroke="#F6821F" stroke-width="2"/>
+  <text x="550" y="600" font-size="13" font-weight="700" fill="#F6821F" text-anchor="middle">Scoped CF API token</text>
+  <text x="550" y="622" font-size="11" fill="#6B7280" text-anchor="middle">Worker Secret — server-side</text>
+  <text x="550" y="640" font-size="11" fill="#6B7280" text-anchor="middle">Workers Scripts: Edit only</text>
+  <text x="550" y="664" font-size="11" fill="#1A6FD4" text-anchor="middle" font-weight="600">The only CF credential,</text>
+  <text x="550" y="680" font-size="11" fill="#1A6FD4" text-anchor="middle" font-weight="600">never leaves the platform</text>
+
+  <!-- ============ ZONE 3: Cloudflare / WFP ============ -->
+  <rect x="750" y="150" width="600" height="620" rx="8" fill="none" stroke="#F6821F" stroke-width="2"/>
+  <text x="1050" y="178" font-size="17" font-weight="700" fill="#F6821F" text-anchor="middle">Cloudflare · Workers for Platforms</text>
+  <text x="1050" y="200" font-size="12" fill="#6B7280" text-anchor="middle">Your Cloudflare account — only platform ops has dashboard access</text>
+
+  <!-- Dispatch Worker -->
+  <rect x="790" y="228" width="520" height="112" rx="6" fill="#F5F7FA" stroke="#1A6FD4" stroke-width="2"/>
+  <text x="1050" y="255" font-size="15" font-weight="600" fill="#1A1A1A" text-anchor="middle">Dynamic dispatch Worker (entry point)</text>
+  <text x="1050" y="279" font-size="12" fill="#6B7280" text-anchor="middle">dispatch-router · routes /&lt;tenant&gt; → env.DISPATCHER.get(tenant)</text>
+  <text x="1050" y="299" font-size="12" fill="#6B7280" text-anchor="middle">runs auth · rate limits · custom limits BEFORE tenant code</text>
+  <text x="1050" y="321" font-size="12" fill="#6B7280" text-anchor="middle">outbound Worker controls tenant egress</text>
+
+  <!-- Dispatch namespace -->
+  <rect x="790" y="370" width="520" height="380" rx="8" fill="none" stroke="#1A6FD4" stroke-width="1.5" stroke-dasharray="8 4"/>
+  <text x="1050" y="398" font-size="14" font-weight="600" fill="#1A1A1A" text-anchor="middle">Dispatch namespace "production"</text>
+  <text x="1050" y="417" font-size="11.5" fill="#6B7280" text-anchor="middle">unlimited user Workers · isolated by default (untrusted mode)</text>
+
+  <g>
+    <rect x="812" y="438" width="228" height="132" rx="6" fill="#F5F7FA" stroke="#D1D9E0"/>
+    <rect x="830" y="460" width="42" height="30" rx="3" fill="#FFFFFF" stroke="#1A6FD4" stroke-width="2"/>
+    <text x="926" y="470" font-size="13" font-weight="600" fill="#1A1A1A" text-anchor="middle">tenant-a</text>
+    <text x="926" y="491" font-size="11" fill="#6B7280" text-anchor="middle">user Worker + assets</text>
+    <text x="926" y="510" font-size="11" fill="#6B7280" text-anchor="middle">own isolate · own cache</text>
+    <text x="926" y="529" font-size="11" fill="#6B7280" text-anchor="middle">tag: owner-&lt;email&gt;</text>
+    <text x="926" y="555" font-size="11" fill="#1A6FD4" text-anchor="middle" font-weight="600">no access to peers</text>
+  </g>
+  <g>
+    <rect x="1060" y="438" width="228" height="132" rx="6" fill="#F5F7FA" stroke="#D1D9E0"/>
+    <rect x="1078" y="460" width="42" height="30" rx="3" fill="#FFFFFF" stroke="#1A6FD4" stroke-width="2"/>
+    <text x="1174" y="470" font-size="13" font-weight="600" fill="#1A1A1A" text-anchor="middle">tenant-b</text>
+    <text x="1174" y="491" font-size="11" fill="#6B7280" text-anchor="middle">user Worker + assets</text>
+    <text x="1174" y="510" font-size="11" fill="#6B7280" text-anchor="middle">own isolate · own cache</text>
+    <text x="1174" y="529" font-size="11" fill="#6B7280" text-anchor="middle">deployed via CLI + Access</text>
+    <text x="1174" y="555" font-size="11" fill="#1A6FD4" text-anchor="middle" font-weight="600">custom CPU limits</text>
+  </g>
+  <g>
+    <rect x="812" y="592" width="476" height="132" rx="6" fill="#F5F7FA" stroke="#D1D9E0" stroke-dasharray="4 3"/>
+    <text x="1050" y="650" font-size="13" fill="#6B7280" text-anchor="middle">tenant-c … thousands more tenant Workers …</text>
+    <text x="1050" y="674" font-size="11.5" fill="#6B7280" text-anchor="middle">bulk lifecycle by tag · per-tenant bindings (KV / D1 / R2)</text>
+  </g>
+
+  <!-- ============ Connections ============ -->
+  <!-- user login -> Access -->
+  <path d="M320 400 C 380 340, 400 260, 428 220" fill="none" stroke="#F6821F" stroke-width="2.5" marker-end="url(#arrow)"/>
+  <text x="352" y="300" font-size="11" fill="#1A1A1A" font-weight="600" transform="rotate(-52 352 300)">1. SSO login</text>
+
+  <!-- user deploy -> control-plane -->
+  <path d="M320 600 C 372 600, 388 560, 428 520" fill="none" stroke="#F6821F" stroke-width="2.5" marker-end="url(#arrow)"/>
+  <text x="360" y="588" font-size="11" fill="#1A1A1A" text-anchor="middle" font-weight="600">2. POST /deploy</text>
+
+  <!-- Access -> control-plane injects JWT -->
+  <path d="M550 280 L 550 308" fill="none" stroke="#F6821F" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="646" y="298" font-size="10.5" fill="#6B7280" text-anchor="middle">injects JWT</text>
+
+  <!-- control-plane -> WFP API -->
+  <path d="M670 500 C 720 500, 730 450, 788 435" fill="none" stroke="#F6821F" stroke-width="2.5" marker-end="url(#arrow)"/>
+  <text x="712" y="450" font-size="11" fill="#1A1A1A" text-anchor="middle" font-weight="600">3. WFP API</text>
+  <text x="712" y="468" font-size="10.5" fill="#6B7280" text-anchor="middle">(server-side token)</text>
+
+  <!-- dispatch worker -> user workers -->
+  <path d="M926 340 L 926 436" fill="none" stroke="#F6821F" stroke-width="2" marker-end="url(#arrow)"/>
+  <path d="M1174 340 L 1174 436" fill="none" stroke="#F6821F" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- visitor traffic into dispatch worker -->
+  <path d="M1050 203 L 1050 226" fill="none" stroke="#F6821F" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- Legend -->
+  <rect x="50" y="740" width="360" height="128" rx="6" fill="#FFFFFF" stroke="#D1D9E0"/>
+  <text x="66" y="764" font-size="12" font-weight="700" fill="#1A1A1A">Verified end-to-end</text>
+  <text x="66" y="786" font-size="11" fill="#6B7280">• No Access token → 302 to login (blocked at edge)</text>
+  <text x="66" y="805" font-size="11" fill="#6B7280">• cloudflared login → JWT validated → deploy succeeds</text>
+  <text x="66" y="824" font-size="11" fill="#6B7280">• Each site = its own isolated user Worker</text>
+  <text x="66" y="843" font-size="11" fill="#6B7280">• Identity tagged on every deploy (ownership/audit)</text>
+</svg>

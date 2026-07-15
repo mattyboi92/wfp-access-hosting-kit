@@ -1,0 +1,22 @@
+{
+  // Dynamic dispatch Worker (platform entry point / router) — Workers for Platforms.
+  // Binds to the dispatch namespace and invokes any tenant Worker by name via
+  // env.DISPATCHER.get(slug). No per-tenant config; unlimited tenants.
+  //
+  // ── FILL IN ──────────────────────────────────────────────────────────────────
+  //   NAMESPACE (below)  the dispatch namespace name you created (e.g. "production")
+  //   SITES_DOMAIN       the wildcard sites domain used for hostname dispatch
+  //
+  // To serve <tenant>.<SITES_DOMAIN>, also add (once) a proxied wildcard DNS record
+  // *.<sites-subdomain> and a Worker route *.<SITES_DOMAIN>/* -> this script.
+  // See ../setup-wildcard-hostnames.sh.
+  "name": "dispatch-router",
+  "main": "worker.js",
+  "compatibility_date": "2024-10-01",
+  "vars": {
+    "SITES_DOMAIN": "sites.example.com"
+  },
+  "dispatch_namespaces": [
+    { "binding": "DISPATCHER", "namespace": "production" }
+  ]
+}

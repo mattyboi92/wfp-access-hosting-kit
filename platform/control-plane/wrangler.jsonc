@@ -1,0 +1,30 @@
+{
+  // CONTROL-PLANE — protected by Cloudflare Access on a custom domain.
+  // Access (OTP / Okta / your IdP) authenticates users before requests reach this Worker.
+  //
+  // ── FILL IN before deploying (see QUICKSTART.md) ─────────────────────────────
+  //   ACCOUNT_ID   your Cloudflare account id
+  //   NAMESPACE    the dispatch namespace name you created (e.g. "production")
+  //   ROUTER_URL   the dispatch router's URL (workers.dev or a custom domain)
+  //   SITES_DOMAIN the wildcard sites domain (tenants live at <slug>.SITES_DOMAIN)
+  //   TEAM_DOMAIN  <your-team>.cloudflareaccess.com
+  //   ACCESS_AUD   the Application Audience (AUD) tag of the Access app on this hostname
+  //
+  // Secret (via `wrangler secret put`):
+  //   CF_API_TOKEN   scoped token (Workers Scripts: Edit + Workers for Platforms). Server-side only.
+  //
+  // NOTE: attach the custom domain (e.g. deploy.example.com) to this Worker via the
+  // dashboard or the workers/domains API; a Pages/Workers custom domain is separate
+  // from Workers Routes and may need different token perms.
+  "name": "control-plane",
+  "main": "worker.js",
+  "compatibility_date": "2024-10-01",
+  "vars": {
+    "ACCOUNT_ID": "REPLACE_ACCOUNT_ID",
+    "NAMESPACE": "production",
+    "ROUTER_URL": "https://dispatch-router.REPLACE_SUBDOMAIN.workers.dev",
+    "SITES_DOMAIN": "sites.example.com",
+    "TEAM_DOMAIN": "REPLACE_TEAM.cloudflareaccess.com",
+    "ACCESS_AUD": "REPLACE_ACCESS_AUD"
+  }
+}

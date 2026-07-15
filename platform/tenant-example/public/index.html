@@ -1,0 +1,14 @@
+<!doctype html>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Tenant example — isolated user Worker</title>
+<body style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;max-width:680px;margin:60px auto;padding:0 20px;color:#1a1a1a;line-height:1.6">
+  <h1>Tenant example</h1>
+  <p>This page is served by an <strong>isolated user Worker</strong> running inside a
+  Workers&nbsp;for&nbsp;Platforms dispatch namespace. It has its own isolate and cache,
+  no access to peer tenants, and was routed here by the dispatch router.</p>
+  <p>Check the <code>x-served-by</code> and <code>x-dispatched-to</code> response headers
+  to see the isolation and routing in action.</p>
+  <p style="color:#6b7280;font-size:14px">Replace this folder with your own static files, or
+  publish sites dynamically via the AI/CLI publisher.</p>
+</body>
