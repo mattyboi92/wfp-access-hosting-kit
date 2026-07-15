@@ -26,13 +26,62 @@ own account/domain, and deploy. It has three moving parts plus an AI/CLI publish
 
 ![Publish flow](diagrams/publish-flow.svg)
 
-1. A non-engineer (optionally via an AI agent) describes the site.
-2. `publish-site.sh` gets a short-lived **Cloudflare Access token** (auto-launches
-   `cloudflared access login` — SSO via your IdP — only if none is cached).
-3. Cloudflare Access authenticates the user at the edge and injects a signed JWT.
-4. The control-plane validates the JWT (`aud`/`iss`/`exp`/RS256), then calls the
-   Workers for Platforms API with its **server-side scoped token** to deploy the site.
-5. The site is live at `https://<slug>.sites.example.com/` (served behind Access).
+**Key point up front: the person publishing never runs `wrangler` and never holds a
+Cloudflare credential.** On their machine the flow is just two ordinary tools —
+`cloudflared` (to get a short-lived Access token) and an HTTPS `POST` (via `curl`) to
+the control-plane's `/deploy` endpoint. The only thing that ever calls the Cloudflare
+API is the **control-plane Worker**, server-side, using a scoped token that never
+leaves the platform.
+
+> There are **two separate deploy paths**, and it's easy to conflate them:
+>
+> | Path | Who runs it | Tool | Talks to |
+> |---|---|---|---|
+> | **Platform install** (one-time) | You, the operator, with a real API token | `wrangler deploy` | Cloudflare Workers API |
+> | **Self-service publish** (every day) | The non-engineer via this kit | `cloudflared` + `curl` (HTTP) | the control-plane Worker's `/deploy` |
+>
+> `wrangler` appears **only** in the one-time install of the three platform Workers
+> (see [QUICKSTART.md](QUICKSTART.md)). The day-to-day publish path deliberately uses
+> **no wrangler and no CF credential** — that's the whole isolation guarantee.
+
+### Step by step — what happens when someone publishes
+
+1. **Describe + generate.** A non-engineer (optionally via an AI agent that auto-loads
+   `publisher/AGENTS.md`) describes the site in English. The agent writes **one
+   self-contained `.html` file** into `publisher/` (all CSS/JS inline, no external
+   fetches — see the site constraints in `AGENTS.md`).
+
+2. **Run `./publish-site.sh <slug> <file.html>`.** No account ID, no API token, no
+   wrangler. The script (`publisher/publish-site.sh`) does three things:
+   - **Gets a Cloudflare Access token via `cloudflared`** — `cloudflared access token
+     -app=$DEPLOY_URL`; if none is cached it auto-runs `cloudflared access login`
+     (browser SSO via your IdP — Okta / OTP / etc.). This is an **Access** token scoped
+     to the deploy app only — *not* a Cloudflare API token or account access.
+   - **Builds the JSON body `{ tenant, html }`** — the HTML file becomes one JSON string.
+   - **Sends a plain HTTPS `POST $DEPLOY_URL/deploy` with `curl`**, carrying the Access
+     token in the `cf-access-token` header. That's the entire local footprint: an
+     authenticated HTTP request to a Worker.
+
+3. **Cloudflare Access enforces auth at the edge.** Because the control-plane hostname
+   sits behind an Access application, an **unauthenticated** `POST` gets a **302 to the
+   login page before the Worker ever runs**. A valid request has the signed JWT injected
+   as the `Cf-Access-Jwt-Assertion` header.
+
+4. **The control-plane Worker is the only thing that calls the Cloudflare API**
+   (`platform/control-plane/worker.js`):
+   - Re-validates the Access JWT itself — `aud` / `iss` / `exp` + RS256 signature against
+     your team's JWKS (`/cdn-cgi/access/certs`). Defense-in-depth on top of edge Access.
+   - Wraps the submitted HTML into a tiny tenant Worker and builds a multipart upload
+     tagged `tenant-<slug>` and `owner-<email>` (identity from the JWT claims).
+   - **`PUT`s it to the Workers for Platforms REST API** using the **server-side scoped
+     token** (a Worker Secret):
+     `PUT /client/v4/accounts/{ACCOUNT_ID}/workers/dispatch/namespaces/{NAMESPACE}/scripts/{slug}`
+   - Returns `{ url, message: "Live at …" }`, which `publish-site.sh` echoes as
+     `✅ Live at …`.
+
+5. **Serving.** A visit to `https://<slug>.sites.example.com/` hits the **dispatch
+   router** Worker, which does `env.DISPATCHER.get(<slug>)` and forwards the request to
+   that tenant's isolated user Worker (also reachable via the path form `/<slug>/`).
 
 **The end user never holds a Cloudflare credential.** The one scoped API token lives
 only inside the control-plane as a Worker Secret and never leaves the platform.
